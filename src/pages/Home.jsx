@@ -142,7 +142,7 @@ export default function Home() {
             {showForm ? "Close Calculator" : "Calculate"}
           </button>
           <button onClick={handleLog} className="btn">
-            Log
+            Log your food
           </button>
           <button onClick={handleSavedFoods} className="btn">
             Saved Foods
