@@ -43,6 +43,7 @@ export default function Login() {
           Login
         </button>
         {message && <p className="error-message">{message}</p>}
+        <button onClick={() => navigate("/register")}>Register</button>
       </form>
     </div>
   );
