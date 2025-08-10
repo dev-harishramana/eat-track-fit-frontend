@@ -10,6 +10,7 @@ export default function Log() {
   const [nutritionResult, setNutritionResult] = useState([]);
   const [globalFoods, setGlobalFoods] = useState([]);
   const todayDate = new Date().toLocaleDateString();
+  const [searchResults, setSearchResults] = useState([]);
 
 
 
@@ -188,6 +189,25 @@ const handleReset = async () => {
   }
 };
 
+const handleSearch = () => {
+  if (!logInput.trim()) {
+    alert("Please enter a food name to search");
+    return;
+  }
+
+  const term = logInput.toLowerCase();
+  const matches = [
+    ...savedFoods.filter((f) => f.name.toLowerCase().includes(term)),
+    ...globalFoods.filter((f) => f.name.toLowerCase().includes(term)),
+  ];
+
+  if (matches.length === 0) {
+    alert("No matching foods found");
+  }
+
+  setSearchResults(matches);
+};
+
 const handleRemoveItem = async (item, indexToRemove) => {
   if (!window.confirm(`Remove ${item.name} from today's log?`)) return;
 
@@ -287,12 +307,48 @@ const handleRemoveItem = async (item, indexToRemove) => {
             Reset Current
           </button>
 
+          <button
+  type="button"
+  onClick={handleSearch}
+  style={{ ...styles.button, backgroundColor: "#3498db", color: "#fff" }}
+>
+  Search
+</button>
+
+{/* Show search results */}
+{searchResults.length > 0 && (
+  <div style={{ marginTop: "1rem" }}>
+    <h4>Search Results:</h4>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+      {searchResults.map((food) => (
+        <button
+          key={food._id}
+          onClick={() => setLogInput(food.name)}
+          style={{
+            padding: "8px 12px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            backgroundColor: "#f5f5f5",
+            cursor: "pointer",
+          }}
+        >
+          {food.name}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
+
           <div style={{ marginBottom: "20px" }}>
-  <button onClick={() => navigate("/home")}>Home</button>
-  <button onClick={() => navigate("/savedfoods")} style={{ marginLeft: "10px" }}>
-    savedFoods
-  </button>
-</div>
+            <button onClick={() => navigate("/home")}>Home</button>
+            <button onClick={() => navigate("/savedfoods")} style={{ marginLeft: "10px" }}>
+            savedFoods
+            </button>
+          </div>
+
+
+
 
 
 
