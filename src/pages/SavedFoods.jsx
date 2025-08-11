@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,9 @@ export default function SavedFoods() {
     fiber: 0,
   });
 
+  // New state to hold saved foods list
+  const [savedFoods, setSavedFoods] = useState([]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFoodData((prevData) => ({
@@ -24,9 +27,28 @@ export default function SavedFoods() {
 
   const navigate = useNavigate();
 
+  // Fetch saved foods on mount
+  useEffect(() => {
+    fetchSavedFoods();
+  }, []);
+
+  const fetchSavedFoods = async () => {
+    try {
+      const res = await API.get("/saved-foods", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setSavedFoods(res.data);
+    } catch (err) {
+      console.error("Failed to fetch saved foods:", err);
+      alert("Failed to load saved foods.");
+    }
+  };
+
   const handleSave = async () => {
     try {
-      const res = await API.post("/saved-foods/add", foodData, {
+      await API.post("/saved-foods/add", foodData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -42,6 +64,7 @@ export default function SavedFoods() {
         fat: 0,
         fiber: 0,
       });
+      fetchSavedFoods(); // Refresh list after adding new food
     } catch (err) {
       console.error("Error saving food:", err.response?.data || err.message);
       alert("Error saving food.");
@@ -78,6 +101,22 @@ export default function SavedFoods() {
           <button className="save-btn" onClick={handleSave}>Save</button>
         </div>
       )}
+
+      {/* Render saved foods list */}
+      <div className="saved-foods-list" style={{ marginTop: "2rem" }}>
+        <h3>Your Saved Foods</h3>
+        {savedFoods.length === 0 ? (
+          <p>No saved foods found.</p>
+        ) : (
+          <ul>
+            {savedFoods.map((food) => (
+              <li key={food._id}>
+                <strong>{food.name}</strong> — Qty: {food.quantity}, Calories: {food.calories}, Protein: {food.protein}, Carbs: {food.carbs}, Fat: {food.fat}, Fiber: {food.fiber}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
