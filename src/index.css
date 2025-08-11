@@ -261,3 +261,20 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.register-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #333;
+  text-align: center;
+}
+
+.register-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
