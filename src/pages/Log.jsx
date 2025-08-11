@@ -308,12 +308,12 @@ const handleRemoveItem = async (item, indexToRemove) => {
           </button>
 
           <button
-  type="button"
-  onClick={handleSearch}
-  style={{ ...styles.button, backgroundColor: "#3498db", color: "#fff" }}
->
-  Search
-</button>
+      type="button"
+      onClick={handleSearch}
+      style={{ ...styles.button, backgroundColor: "#3498db", color: "#fff" }}
+        >
+      Search
+      </button>
 
 {/* Show search results */}
 {searchResults.length > 0 && (
@@ -339,13 +339,25 @@ const handleRemoveItem = async (item, indexToRemove) => {
   </div>
 )}
 
+<div style={styles.navButtonContainer}>
+  <button
+    style={styles.navButton}
+    onClick={() => navigate("/home")}
+    onMouseEnter={e => e.currentTarget.style.backgroundColor = "#333"}
+    onMouseLeave={e => e.currentTarget.style.backgroundColor = "#100c08"}
+  >
+    Home
+  </button>
+  <button
+    style={styles.navButton}
+    onClick={() => navigate("/savedfoods")}
+    onMouseEnter={e => e.currentTarget.style.backgroundColor = "#333"}
+    onMouseLeave={e => e.currentTarget.style.backgroundColor = "#100c08"}
+  >
+    Saved Foods
+  </button>
+</div>
 
-          <div style={{ marginBottom: "20px" }}>
-            <button onClick={() => navigate("/home")}>Home</button>
-            <button onClick={() => navigate("/savedfoods")} style={{ marginLeft: "10px" }}>
-            savedFoods
-            </button>
-          </div>
 
 
 
@@ -358,7 +370,7 @@ const handleRemoveItem = async (item, indexToRemove) => {
 {nutritionResult.length > 0 && (
   <div style={{ marginTop: "2rem", overflowX: "auto" }}>
     <h3>Nutrition Summary</h3>
-    <table style={{ borderCollapse: "collapse", width: "100%" }}>
+    <table className="nutrition-table" style={{ borderCollapse: "collapse", width: "100%" }}>
       <thead>
         <tr style={{ backgroundColor: "#f0f0f0" }}>
           <th style={styles.th}>#</th>
@@ -391,18 +403,18 @@ const handleRemoveItem = async (item, indexToRemove) => {
         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
       >
-      <td style={styles.td}>{index + 1}</td>
-      <td style={styles.td}>{item.name}</td>
-      <td style={styles.td}>{item.quantity}</td>
-      <td style={styles.td}>{Number(item.calories).toFixed(1)}</td>
-      <td style={styles.td}>{Number(item.protein).toFixed(1)}</td>
-      <td style={styles.td}>{Number(item.carbs).toFixed(1)}</td>
-      <td style={styles.td}>{Number(item.fat).toFixed(1)}</td>
-      <td style={styles.td}>{Number(item.fiber).toFixed(1)}</td>
+<td style={styles.td} data-label="#"> {index + 1} </td>
+<td style={styles.td} data-label="Food"> {item.name} </td>
+<td style={styles.td} data-label="Qty"> {item.quantity} </td>
+<td style={styles.td} data-label="Calories (kcal)"> {Number(item.calories).toFixed(1)} </td>
+<td style={styles.td} data-label="Protein (g)"> {Number(item.protein).toFixed(1)} </td>
+<td style={styles.td} data-label="Carbs (g)"> {Number(item.carbs).toFixed(1)} </td>
+<td style={styles.td} data-label="Fat (g)"> {Number(item.fat).toFixed(1)} </td>
+<td style={styles.td} data-label="Fiber (g)"> {Number(item.fiber).toFixed(1)} </td>
+<td style={styles.td} data-label="Date & Time"> {item.logDate && item.logTime ? `${item.logDate} | ${item.logTime}` : "-"} </td>
 
-      <td style={styles.td}>
-      {item.logDate && item.logTime ? `${item.logDate} | ${item.logTime}` : "-"}
-      </td>
+
+
 
       </tr>
   ))}
@@ -464,6 +476,47 @@ const handleRemoveItem = async (item, indexToRemove) => {
 }
 
 const styles = {
+    container: {
+    padding: "2rem",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#f8f8ff",
+    minHeight: "100vh",
+  },
+  form: {
+    backgroundColor: "#fff",
+    padding: "2rem",
+    borderRadius: "10px",
+    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+    width: "100%",
+    maxWidth: "700px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.2rem",
+  },
+  // ... other styles
+  navButton: {
+    padding: "0.6rem 1.2rem",
+    fontSize: "1rem",
+    backgroundColor: "#100c08",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+    marginRight: "10px",
+  },
+  navButtonHover: {
+    backgroundColor: "#333333",
+  },
+  navButtonContainer: {
+    marginBottom: "20px",
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+  },
   container: {
     padding: "2rem",
     display: "flex",
