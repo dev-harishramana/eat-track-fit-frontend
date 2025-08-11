@@ -278,3 +278,36 @@
 .register-link:hover {
   text-decoration: underline;
 }
+
+@media screen and (max-width: 600px) {
+  .nutrition-table th,
+  .nutrition-table td {
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .nutrition-table thead {
+    display: none; /* optionally hide header on very small screens */
+  }
+
+  .nutrition-table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+  }
+
+  .nutrition-table tbody tr td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0 !important;
+    border: none !important;
+  }
+
+  .nutrition-table tbody tr td::before {
+    content: attr(data-label);
+    font-weight: bold;
+  }
+}
+
