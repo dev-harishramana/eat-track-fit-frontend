@@ -8,16 +8,18 @@ import SavedFoods from "./pages/SavedFoods";
 export default function App() {
   return (
     <>
-
       <Routes>
-        {/* Redirect root path to /login */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Redirect root path to /home */}
+        <Route path="/" element={<Navigate to="/home" />} />
 
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/log" element={<Log />} />
         <Route path="/savedfoods" element={<SavedFoods />} />
+
+        {/* Redirect all unmatched routes to /home */}
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </>
   );
