@@ -425,49 +425,39 @@ const handleRemoveItem = async (item, indexToRemove) => {
 )}
 
 
-            <h3 style={{ marginTop: "2rem" }}>Your Saved Foods</h3>         
+<div className="foods-container">
+  <div className="foods-column">
+    <h3>Your Saved Foods</h3>
+    <div className="foods-list">
+      {savedFoods.map((food) => (
+        <button
+          key={food._id}
+          onClick={() => setLogInput(food.name)}
+          className="saved-food-btn"
+        >
+          {food.name}
+        </button>
+      ))}
+    </div>
+  </div>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                    {savedFoods.map((food) => (
-
-                      
-                <button
-                    key={food._id}
-                    onClick={() => setLogInput(food.name)}
-
-                    style={{
-                    padding: "8px 12px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    backgroundColor: "#f5f5f5",
-                    cursor: "pointer",
-                    }}
-                >
-                    {food.name}
-                </button>
-                ))}
-            </div>
-
-            
-
-            <h3 style={{ marginTop: "2rem" }}>Global Foods</h3>
-<div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-  {globalFoods.map((food) => (
-    <button
-      key={food._id}
-      onClick={() => setLogInput(food.name)}
-      style={{
-        padding: "8px 12px",
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        backgroundColor: "#e0f7fa",
-        cursor: "pointer",
-      }}
-    >
-      {food.name}
-    </button>
-  ))}
+  <div className="foods-column">
+    <h3>Global Foods</h3>
+    <div className="foods-list">
+      {globalFoods.map((food) => (
+        <button
+          key={food._id}
+          onClick={() => setLogInput(food.name)}
+          className="global-food-btn"
+        >
+          {food.name}
+        </button>
+      ))}
+    </div>
+  </div>
 </div>
+
+
 
 
     </div>
@@ -476,54 +466,13 @@ const handleRemoveItem = async (item, indexToRemove) => {
 }
 
 const styles = {
-    container: {
-    padding: "2rem",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#f8f8ff",
-    minHeight: "100vh",
-  },
-  form: {
-    backgroundColor: "#fff",
-    padding: "2rem",
-    borderRadius: "10px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-    width: "100%",
-    maxWidth: "700px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "1.2rem",
-  },
-  // ... other styles
-  navButton: {
-    padding: "0.6rem 1.2rem",
-    fontSize: "1rem",
-    backgroundColor: "#100c08",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease",
-    marginRight: "10px",
-  },
-  navButtonHover: {
-    backgroundColor: "#333333",
-  },
-  navButtonContainer: {
-    marginBottom: "20px",
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-  },
   container: {
     padding: "2rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     fontFamily: "Arial, sans-serif",
-    backgroundColor: "#f8f8ff",
+    backgroundColor: "#ffffff", // Base white
     minHeight: "100vh",
   },
   form: {
@@ -544,7 +493,7 @@ const styles = {
   label: {
     fontWeight: "bold",
     marginBottom: "0.3rem",
-    color: "#333",
+    color: "#007bff", // Bright blue labels
   },
   input: {
     padding: "0.7rem",
@@ -555,19 +504,40 @@ const styles = {
   button: {
     padding: "0.7rem 1.2rem",
     fontSize: "1rem",
-    backgroundColor: "#100c08",
+    backgroundColor: "#007bff", // Main action color
     color: "#fff",
     border: "none",
     borderRadius: "6px",
     cursor: "pointer",
-    transition: "0.3s",
+    transition: "background-color 0.3s ease",
     marginRight: "10px",
+  },
+  navButton: {
+    padding: "0.6rem 1.2rem",
+    fontSize: "1rem",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+    marginRight: "10px",
+  },
+  navButtonHover: {
+    backgroundColor: "#00b8d4", // Teal hover
+  },
+  navButtonContainer: {
+    marginBottom: "20px",
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
   },
   th: {
     padding: "12px",
-    borderBottom: "2px solid #ccc",
+    borderBottom: "2px solid #00b8d4", // Teal table border
     fontWeight: "bold",
     textAlign: "center",
+    color: "#007bff", // Bright blue headings
   },
   td: {
     padding: "10px",
@@ -583,10 +553,11 @@ const styles = {
   },
   globalFoodButton: {
     padding: "8px 14px",
-    border: "1px solid #ccc",
+    border: "1px solid #00b8d4",
     borderRadius: "6px",
     backgroundColor: "#e0f7fa",
     cursor: "pointer",
     transition: "0.2s",
   },
 };
+
