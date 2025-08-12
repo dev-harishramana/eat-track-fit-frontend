@@ -14,32 +14,46 @@ export default function Home() {
     goal: "0.25",
   });
 
+const token = localStorage.getItem("token");
+const isGuest = !token || token === "guest";
+
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
+      if (isGuest) {
+        // Load guest data from localStorage if available
+        const guestData = localStorage.getItem("guestUserData");
+        if (guestData) {
+          setUserData(JSON.parse(guestData));
+        } else {
+          setUserData({
+            name: "Guest",
+            calories: { current: 0, target: 0 },
+            protein: { current: 0, target: 0 },
+            carbs: { current: 0, target: 0 },
+            fat: { current: 0, target: 0 },
+            fiber: { current: 0, target: 0 },
+          });
         }
-
-        const res = await API.get("/auth/user", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setUserData(res.data);
-      } catch (error) {
-        console.error("Unauthorized or error fetching user data", error);
-        navigate("/login");
+      } else {
+        try {
+          const res = await API.get("/auth/user", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUserData(res.data);
+        } catch (error) {
+          console.error("Unauthorized or error fetching user data", error);
+          navigate("/login");
+        }
       }
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, isGuest, token]);
 
   const calculateAndUpdateTargets = async () => {
     const { age, gender, height, weight, goal } = formData;
@@ -66,38 +80,48 @@ export default function Home() {
     const carbs = Math.round((CalorieGoal - (proteinCal + fatCal)) / 4);
     const fiber = 30;
 
-    setUserData((prev) => ({
-      ...prev,
-      calories: { ...prev.calories, target: Math.round(CalorieGoal) },
-      protein: { ...prev.protein, target: protein },
-      carbs: { ...prev.carbs, target: carbs },
-      fat: { ...prev.fat, target: fat },
-      fiber: { ...prev.fiber, target: fiber },
-    }));
+    const updatedData = {
+      ...userData,
+      calories: { ...userData.calories, target: Math.round(CalorieGoal) },
+      protein: { ...userData.protein, target: protein },
+      carbs: { ...userData.carbs, target: carbs },
+      fat: { ...userData.fat, target: fat },
+      fiber: { ...userData.fiber, target: fiber },
+    };
 
+    setUserData(updatedData);
     setShowForm(false);
 
-    try {
-      await API.post(
-        "/auth/update-targets",
-        {
-          calories: Math.round(CalorieGoal),
-          protein,
-          carbs,
-          fat,
-          fiber,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-    } catch (err) {
-      console.error("Error updating targets", err);
+    if (isGuest) {
+      // Save guest data locally
+      localStorage.setItem("guestUserData", JSON.stringify(updatedData));
+    } else {
+      try {
+        await API.post(
+          "/auth/update-targets",
+          {
+            calories: Math.round(CalorieGoal),
+            protein,
+            carbs,
+            fat,
+            fiber,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } catch (err) {
+        console.error("Error updating targets", err);
+      }
     }
   };
 
+  
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    if (!isGuest) {
+      localStorage.removeItem("token");
+    }
     navigate("/login");
   };
 
@@ -124,10 +148,14 @@ export default function Home() {
     </p>
   );
 
+  
+
   return (
     <div className="home-wrapper">
       <div className="home-card">
-        <h1 className="home-title">Welcome, {name}!</h1>
+        <h1 className="home-title">
+          Welcome, {isGuest ? `${name} (Guest Mode)` : name}!
+        </h1>
 
         <div className="nutrition-stats">
           {renderNutrient("Calories (Cal)", calories)}
@@ -137,20 +165,24 @@ export default function Home() {
           {renderNutrient("Fiber (g)", fiber)}
         </div>
 
-        <div className="button-group">
-          <button onClick={() => setShowForm(!showForm)} className="btn">
-            {showForm ? "Close Calculator" : "Calculate"}
-          </button>
-          <button onClick={handleLog} className="btn">
-            Log your food
-          </button>
-          <button onClick={handleSavedFoods} className="btn">
-            Saved Foods
-          </button>
-          <button onClick={handleLogout} className="btn logout-btn">
-            Logout
-          </button>
-        </div>
+<div className="button-group">
+  <button onClick={() => setShowForm(!showForm)} className="btn">
+    {showForm ? "Close Calculator" : "Calculate"}
+  </button>
+
+  {/* Remove the guest restriction here */}
+  <button onClick={handleLog} className="btn">
+    Log your food
+  </button>
+  <button onClick={handleSavedFoods} className="btn">
+    Saved Foods
+  </button>
+
+  <button onClick={handleLogout} className="btn logout-btn">
+    {isGuest ? "Register as New User" : "Logout"}
+  </button>
+</div>
+
 
         {showForm && (
           <div className="form-section">
