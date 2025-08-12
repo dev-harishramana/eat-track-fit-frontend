@@ -14,8 +14,11 @@ export default function SavedFoods() {
     fiber: 0,
   });
 
-  // New state to hold saved foods list
   const [savedFoods, setSavedFoods] = useState([]);
+  const [message, setMessage] = useState(""); // ✅ For notification messages
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,9 +28,6 @@ export default function SavedFoods() {
     }));
   };
 
-  const navigate = useNavigate();
-
-  // Fetch saved foods on mount
   useEffect(() => {
     fetchSavedFoods();
   }, []);
@@ -42,7 +42,7 @@ export default function SavedFoods() {
       setSavedFoods(res.data);
     } catch (err) {
       console.error("Failed to fetch saved foods:", err);
-      alert("Failed to load saved foods.");
+      showMessage("Failed to load saved foods.", "error");
     }
   };
 
@@ -53,7 +53,7 @@ export default function SavedFoods() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Food saved successfully!");
+      showMessage("Food saved successfully!", "success");
       setShowForm(false);
       setFoodData({
         name: "",
@@ -64,16 +64,38 @@ export default function SavedFoods() {
         fat: 0,
         fiber: 0,
       });
-      fetchSavedFoods(); // Refresh list after adding new food
+      fetchSavedFoods();
     } catch (err) {
       console.error("Error saving food:", err.response?.data || err.message);
-      alert("Error saving food.");
+      showMessage("Error saving food.", "error");
     }
+  };
+
+  const showMessage = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => setMessage(""), 3000); // Auto-hide after 3 seconds
   };
 
   return (
     <div className="saved-foods-container">
       <h2 className="title">Saved Foods</h2>
+
+      {/* ✅ Notification box */}
+      {message && (
+        <div
+          style={{
+            padding: "10px",
+            marginBottom: "10px",
+            borderRadius: "5px",
+            backgroundColor:
+              messageType === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+          }}
+        >
+          {message}
+        </div>
+      )}
 
       <div className="nav-buttons">
         <button onClick={() => navigate("/home")}>Home</button>
@@ -102,7 +124,6 @@ export default function SavedFoods() {
         </div>
       )}
 
-      {/* Render saved foods list */}
       <div className="saved-foods-list" style={{ marginTop: "2rem" }}>
         <h3>Your Saved Foods</h3>
         {savedFoods.length === 0 ? (
